@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 services:
   db:
     image: mysql:8.0
@@ -13,3 +14,58 @@ services:
 
 volumes:
   mysql_data:
+=======
+version: '3.8'
+
+services:
+  app:
+    image: nextcloud:latest
+    container_name: nextcloud-app
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_PASSWORD=nextcloud
+      - REDIS_HOST=redis
+    volumes:
+      - nextcloud_data:/var/www/html
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: mariadb:11.4
+    container_name: nextcloud-db
+    restart: always
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    environment:
+      - MYSQL_ROOT_PASSWORD=nextcloud
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_PASSWORD=nextcloud
+    volumes:
+      - db_data:/var/lib/mysql
+
+  redis:
+    image: redis:alpine
+    container_name: nextcloud-redis
+    restart: always
+
+  cron:
+    image: nextcloud:latest
+    container_name: nextcloud-cron
+    restart: always
+    entrypoint: /cron.sh
+    volumes:
+      - nextcloud_data:/var/www/html
+    depends_on:
+      - db
+      - redis
+
+volumes:
+  nextcloud_data:
+  db_data:
+>>>>>>> 66c135819cb2468a2b67f268be5520f3d1d54b99
