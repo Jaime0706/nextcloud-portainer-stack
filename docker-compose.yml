@@ -1,20 +1,3 @@
-<<<<<<< HEAD
-services:
-  db:
-    image: mysql:8.0
-    container_name: streaming_mysql
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: rootpass
-      MYSQL_DATABASE: streaming_db
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-
-volumes:
-  mysql_data:
-=======
 version: '3.8'
 
 services:
@@ -65,7 +48,21 @@ services:
       - db
       - redis
 
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    ports:
+      - "9443:9443"
+      - "9000:9000"
+
 volumes:
   nextcloud_data:
   db_data:
->>>>>>> 66c135819cb2468a2b67f268be5520f3d1d54b99
+  portainer_data:
